@@ -6,22 +6,23 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 50px;
+      padding: 80px;
     }
-    h1 {
-      color: #333;
+    input[type="file"] {
+      margin: 20px 0;
     }
-    form {
-      margin-top: 30px;
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
   <h1>Upload Your Memories!</h1>
-  <form method="POST" action="/upload" enctype="multipart/form-data">
-    <label>Select a photo:</label><br><br>
-    <input type="file" name="photo" required><br><br>
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" required><br>
     <button type="submit">Upload</button>
   </form>
+  <p><a href="/gallery">View Gallery</a></p>
 </body>
 </html>
