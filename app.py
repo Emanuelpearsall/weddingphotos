@@ -75,17 +75,29 @@ def gallery():
         return redirect(url_for("index"))
 
     try:
+        # List just the files inside the folder named after the code
         files = supabase.storage.from_(BUCKET_NAME).list(code)
+        print("FILES IN", code, "→", files, file=sys.stderr)
+
         urls = []
         for f in files:
             name = f.get("name")
-            if not name: continue
-            pub = supabase.storage.from_(BUCKET_NAME).get_public_url(name)
-            urls.append(pub.get("publicURL") or pub.get("url"))
+            if not name:
+                continue
+
+            # Rebuild the full path: code/filename
+            full_path = f"{code}/{name}"
+            pub       = supabase.storage.from_(BUCKET_NAME).get_public_url(full_path)
+            url       = pub.get("publicURL") or pub.get("url")
+            print("URL:", url, file=sys.stderr)
+            urls.append(url)
+
         return render_template("gallery.html", urls=urls, code=code)
+
     except Exception as e:
         print("[gallery error]", e, file=sys.stderr)
         return f"Error loading gallery: {e}", 500
+
 
 
 @app.route("/my-gallery")
