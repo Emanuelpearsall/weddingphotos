@@ -41,7 +41,7 @@ def create_gallery():
 def upload():
     code = request.args.get("code")
     if not code:
-        return redirect("/")
+        return redirect("/")   # no code → back home
 
     if request.method == "POST":
         file = request.files.get("file")
@@ -51,36 +51,51 @@ def upload():
         try:
             data = file.read()
             res  = supabase.storage.from_(BUCKET_NAME).upload(f"{code}/{file.filename}", data)
-            
-            # Check for error attribute, not res.get()
             if getattr(res, "error", None):
                 return f"Upload error: {res.error}", 500
 
-            return redirect(f"/upload?code={code}")
+            # ←── Here: after a successful upload, redirect to the code-specific gallery
+            return redirect(f"/gallery?code={code}")
+
         except Exception as e:
             return f"Unexpected upload error: {e}", 500
 
+    # GET → render the upload form, passing the code
     return render_template("upload.html", code=code)
 
 
 
-@app.route("/gallery", methods=["GET"])
+@app.route("/gallery", methods=["GET", "POST"])
 def gallery():
+    # Require a code parameter
+    code = request.args.get("code")
+    if not code:
+        return redirect("/")  # no code, go back home
+
     try:
-        files = supabase.storage.from_(BUCKET_NAME).list("")
+        # List only files in the folder named after the code
+        files = supabase.storage.from_(BUCKET_NAME).list(code)  
+        # e.g. ["sunny-day-123/image1.jpg", ...]
+
         urls = []
         for f in files:
             name = f.get("name")
             if not name:
                 continue
+            # Build the public URL
             pub = supabase.storage.from_(BUCKET_NAME).get_public_url(name)
             url = pub.get("publicURL") or pub.get("url")
             urls.append(url)
-        return render_template("gallery.html", urls=urls)
+
+        return render_template("gallery.html", urls=urls, code=code)
+
     except Exception as e:
-        print("[gallery error]", e, file=sys.stderr)
-        return f"Error loading gallery: {e}", 500
+        return f"Error loading gallery for '{code}': {e}", 500
+
+
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
