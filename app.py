@@ -26,12 +26,13 @@ def index():
 
         try:
             file_path = file.filename
-            supabase.storage.from_(BUCKET_NAME).upload(file_path, file)
+            supabase.storage.from_(BUCKET_NAME).upload(file_path, file.read())
             return redirect("/gallery")
         except Exception as e:
             return f"Internal upload error: {e}", 500
 
     return render_template("index.html")
+
 
 # Gallery route
 @app.route("/gallery", methods=["GET"])
