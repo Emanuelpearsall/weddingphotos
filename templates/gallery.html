@@ -29,8 +29,10 @@
   <h1>Photo Gallery 📸</h1>
   <div class="gallery">
     {% for url in urls %}
-      <img src="{{ url }}" alt="Uploaded photo">
-    {% endfor %}
+      {% for url in urls %}
+  <img src="{{ url }}" alt="Uploaded photo" style="width: 300px; margin: 10px;">
+{% endfor %}
   </div>
 </body>
 </html>
+
