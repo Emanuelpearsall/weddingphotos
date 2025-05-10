@@ -1,32 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Memories</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .gallery img {
-            width: 300px;
-            margin: 10px;
-            border-radius: 8px;
-        }
-    </style>
+  <title>Gallery</title>
 </head>
 <body>
-    <h1>Gallery</h1>
-    <div class="gallery">
-        {% for url in urls %}
-            <img src="{{ url }}" alt="Uploaded photo" style="width: 300px; margin: 10px;">
-        {% endfor %}
-
-    </div>
+  <h1>Gallery</h1>
+  {% if urls %}
+    {% for url in urls %}
+      <div style="margin: 10px;">
+        <img src="{{ url }}" alt="Uploaded Image" width="300">
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No images found.</p>
+  {% endif %}
+  <br>
+  <a href="/">Back to Upload</a>
 </body>
 </html>
-
-
