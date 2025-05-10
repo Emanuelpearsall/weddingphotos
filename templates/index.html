@@ -1,1 +1,27 @@
-<!DOCTYPE html><html><head><title>Upload Your Memories</title></head><body><h1>Welcome</h1></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Your Memories</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Upload Your Memories!</h1>
+  <form method="POST" action="/upload" enctype="multipart/form-data">
+    <label>Select a photo:</label><br><br>
+    <input type="file" name="photo" required><br><br>
+    <button type="submit">Upload</button>
+  </form>
+</body>
+</html>
