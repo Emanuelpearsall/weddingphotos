@@ -1,28 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Upload Your Memories</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 80px;
-    }
-    input[type="file"] {
-      margin: 20px 0;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-    }
-  </style>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>Upload Your Memories!</h1>
-  <form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" required><br>
-    <button type="submit">Upload</button>
-  </form>
-  <p><a href="/gallery">View Gallery</a></p>
+  <div class="hero">
+    <img src="/static/images/smile.png" alt="Smile Icon" class="icon">
+    <h1>Upload Your Memories!</h1>
+    <img src="/static/images/camera.png" alt="Camera Icon" class="icon">
+  </div>
+
+  <div class="container">
+    <!-- Join existing gallery -->
+    <form action="/upload" method="get" class="form-join">
+      <label for="code">Gallery Code</label>
+      <input type="text" name="code" id="code" placeholder="e.g. sunny-day-123" required>
+      <label for="name">Your Name (optional)</label>
+      <input type="text" name="name" id="name" placeholder="e.g. Alex or Aunt Lisa">
+      <button type="submit">Join Gallery</button>
+    </form>
+
+    <hr>
+
+    <!-- Create new gallery -->
+    <form action="/create" method="post" class="form-create">
+      <button type="submit" class="create-btn">🎉 Create a New Gallery</button>
+    </form>
+  </div>
+
+  <div class="footer">
+    <p><a href="/gallery">View All Galleries</a></p>
+    <img src="/static/images/plane.png" alt="Plane Icon" class="icon">
+  </div>
 </body>
 </html>
