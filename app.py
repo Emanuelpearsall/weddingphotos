@@ -1,17 +1,20 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for, session
 from supabase import create_client
 from dotenv import load_dotenv
 import os, random, sys
 
-# Load environment
+# Load .env (locally) or real env vars (on Render)
 load_dotenv()
 app = Flask(__name__)
 
+# Secret key for session cookies (override in production via ENV)
+app.secret_key = os.getenv("SECRET_KEY", "supersecret123")
+
+# Supabase setup
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 BUCKET_NAME   = "wedding-uploads"
-
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase      = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 def generate_code():
@@ -22,26 +25,30 @@ def generate_code():
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        # Join existing
         code = request.form.get("code")
         if not code:
             return "Please enter a gallery code", 400
-        return redirect(f"/upload?code={code}")
+        # store in session and redirect
+        session["my_code"] = code
+        return redirect(url_for("upload", code=code))
     return render_template("index.html")
 
 
 @app.route("/create", methods=["POST"])
 def create_gallery():
-    # Create new
     code = generate_code()
-    return redirect(f"/upload?code={code}")
+    session["my_code"] = code
+    return redirect(url_for("upload", code=code))
 
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
     code = request.args.get("code")
     if not code:
-        return redirect("/")   # no code → back home
+        return redirect(url_for("index"))
+
+    # remember this code in the session
+    session["my_code"] = code
 
     if request.method == "POST":
         file = request.files.get("file")
@@ -53,49 +60,41 @@ def upload():
             res  = supabase.storage.from_(BUCKET_NAME).upload(f"{code}/{file.filename}", data)
             if getattr(res, "error", None):
                 return f"Upload error: {res.error}", 500
-
-            # ←── Here: after a successful upload, redirect to the code-specific gallery
-            return redirect(f"/gallery?code={code}")
-
+            return redirect(url_for("gallery", code=code))
         except Exception as e:
+            print("[upload error]", e, file=sys.stderr)
             return f"Unexpected upload error: {e}", 500
 
-    # GET → render the upload form, passing the code
     return render_template("upload.html", code=code)
 
 
-
-@app.route("/gallery", methods=["GET", "POST"])
+@app.route("/gallery", methods=["GET"])
 def gallery():
-    # Require a code parameter
     code = request.args.get("code")
     if not code:
-        return redirect("/")  # no code, go back home
+        return redirect(url_for("index"))
 
     try:
-        # List only files in the folder named after the code
-        files = supabase.storage.from_(BUCKET_NAME).list(code)  
-        # e.g. ["sunny-day-123/image1.jpg", ...]
-
+        files = supabase.storage.from_(BUCKET_NAME).list(code)
         urls = []
         for f in files:
             name = f.get("name")
-            if not name:
-                continue
-            # Build the public URL
+            if not name: continue
             pub = supabase.storage.from_(BUCKET_NAME).get_public_url(name)
-            url = pub.get("publicURL") or pub.get("url")
-            urls.append(url)
-
+            urls.append(pub.get("publicURL") or pub.get("url"))
         return render_template("gallery.html", urls=urls, code=code)
-
     except Exception as e:
-        return f"Error loading gallery for '{code}': {e}", 500
+        print("[gallery error]", e, file=sys.stderr)
+        return f"Error loading gallery: {e}", 500
 
 
+@app.route("/my-gallery")
+def my_gallery():
+    code = session.get("my_code")
+    if not code:
+        return redirect(url_for("index"))
+    return redirect(url_for("gallery", code=code))
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
