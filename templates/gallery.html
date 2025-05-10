@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Gallery</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    .gallery { display: flex; flex-wrap: wrap; justify-content: center; }
+    .gallery img { width: 300px; margin: 10px; border-radius: 8px; }
+  </style>
 </head>
 <body>
   <h1>Gallery</h1>
   {% if urls %}
-    {% for url in urls %}
-      <div style="margin: 10px;">
-        <img src="{{ url }}" alt="Uploaded Image" width="300">
-      </div>
-    {% endfor %}
+    <div class="gallery">
+      {% for url in urls %}
+        <img src="{{ url }}" alt="Uploaded Image">
+      {% endfor %}
+    </div>
   {% else %}
     <p>No images found.</p>
   {% endif %}
-  <br>
-  <a href="/">Back to Upload</a>
+  <p><a href="/">Back to Upload</a></p>
 </body>
 </html>
