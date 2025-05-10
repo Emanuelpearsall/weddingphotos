@@ -41,7 +41,7 @@ def create_gallery():
 def upload():
     code = request.args.get("code")
     if not code:
-        return redirect("/")   # no code → back to index
+        return redirect("/")
 
     if request.method == "POST":
         file = request.files.get("file")
@@ -51,16 +51,17 @@ def upload():
         try:
             data = file.read()
             res  = supabase.storage.from_(BUCKET_NAME).upload(f"{code}/{file.filename}", data)
-            if res.get("error"):
-                return f"Upload error: {res['error']['message']}", 500
-            # Stay on the same upload page so they can add more
+            
+            # Check for error attribute, not res.get()
+            if getattr(res, "error", None):
+                return f"Upload error: {res.error}", 500
+
             return redirect(f"/upload?code={code}")
         except Exception as e:
-            print("[upload error]", e, file=sys.stderr)
             return f"Unexpected upload error: {e}", 500
 
-    # GET → show the upload form for this gallery code
     return render_template("upload.html", code=code)
+
 
 
 @app.route("/gallery", methods=["GET"])
