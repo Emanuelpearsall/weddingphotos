@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, url_for
 from supabase import create_client
 from dotenv import load_dotenv
@@ -14,13 +13,28 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 BUCKET_NAME = "wedding-uploads"
 
-@app.route("/", methods=["GET"])
+# Homepage route
+@app.route("/", methods=["GET", "POST"])
 def home():
+    if request.method == "POST":
+        file = request.files.get("file")
+        if not file:
+            return "No file received", 400
+
+        file_path = file.filename
+        res = supabase.storage.from_(BUCKET_NAME).upload(file_path, file)
+
+        if 'error' in res:
+            return f"Upload error: {res['error']['message']}", 500
+
+        return redirect("/gallery")
+
     return render_template("index.html")
 
 @app.route("/gallery", methods=["GET", "POST"])
 def gallery():
-    access_code = "1234"  # static test code
+    access_code = "1234"  # Replace with your actual auth logic later
+
     if request.method == "POST":
         code = request.form.get("code")
         if code != access_code:
@@ -40,13 +54,13 @@ def generate_code():
 @app.route("/create", methods=["POST"])
 def create_gallery():
     code = generate_code()
-    return redirect(url_for("upload", code=code))
+    return redirect(url_for("upload_with_code", code=code))
 
 @app.route("/upload", methods=["GET", "POST"])
-def upload():
+def upload_with_code():
     code = request.args.get("code")
     if request.method == "POST":
-        file = request.files.get("photo")
+        file = request.files["photo"]
         if file:
             supabase.storage.from_(BUCKET_NAME).upload(f"{code}/{file.filename}", file)
             return render_template("upload.html", message="Upload successful!", code=code)
