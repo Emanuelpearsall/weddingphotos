@@ -2,17 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Upload to {{ code }}</title>
+  <title>Upload to {{ code }} | MemoryLane</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>Gallery Code: {{ code }}</h1>
-  <form action="/upload?code={{ code }}" method="POST" enctype="multipart/form-data">
-    <label>Select a photo:</label><br>
-    <input type="file" name="file" required><br><br>
-    <button type="submit">Upload</button>
-  </form>
-  <p><a href="/gallery">View All Galleries</a></p>
-  <p><a href="/">Back to Home</a></p>
+
+  <header>
+    <img src="/static/images/logo.png" alt="MemoryLane Logo" class="logo">
+    <h1>Upload to {{ code }}</h1>
+  </header>
+
+  <div class="container">
+    <form action="/upload?code={{ code }}" method="POST" enctype="multipart/form-data">
+      <label>Select a photo:</label>
+      <input type="file" name="file" required>
+      <button type="submit">Upload</button>
+    </form>
+    <div class="links">
+      <a href="{{ url_for('gallery', code=code) }}">View This Gallery</a> |
+      <a href="/">Home</a>
+    </div>
+  </div>
+
 </body>
 </html>

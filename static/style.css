@@ -1,4 +1,10 @@
-/* Base reset */
+:root {
+  --primary: #FF6B6B;   /* coral accent */
+  --secondary: #4ECDC4; /* mint accent */
+  --bg: #f4faff;
+  --text: #333;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -7,13 +13,13 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: #f4faff;
-  color: #333;
+  background: var(--bg);
+  color: var(--text);
   text-align: center;
   padding: 20px;
 }
 
-.hero {
+header {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,14 +27,19 @@ body {
   margin-bottom: 24px;
 }
 
-.hero h1 {
-  font-size: 2.5rem;
-  color: #005f73;
+header .logo {
+  max-height: 60px;
 }
 
-.icon {
-  width: 48px;
-  height: 48px;
+header h1 {
+  font-size: 2.5rem;
+  color: var(--primary);
+}
+
+header .tagline {
+  font-size: 1.2rem;
+  color: var(--secondary);
+  margin-top: 8px;
 }
 
 .container {
@@ -37,7 +48,7 @@ body {
   background: #fff;
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 form {
@@ -52,7 +63,8 @@ label {
   font-weight: 600;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="file"] {
   padding: 10px;
   font-size: 1rem;
   border: 2px solid #ccc;
@@ -62,7 +74,7 @@ input[type="text"] {
 button {
   padding: 12px;
   font-size: 1rem;
-  background: #0077b6;
+  background: var(--primary);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -71,7 +83,27 @@ button {
 }
 
 button:hover {
-  background: #005f86;
+  background: #e6555b;
+}
+
+.create-btn {
+  background: var(--secondary);
+}
+
+.create-btn:hover {
+  background: #3db3a7;
+}
+
+.form-view {
+  margin-top: 16px;
+}
+
+.view-btn {
+  background: var(--secondary);
+}
+
+.view-btn:hover {
+  background: #3db3a7;
 }
 
 hr {
@@ -80,24 +112,28 @@ hr {
   margin: 24px 0;
 }
 
-.form-create .create-btn {
-  background: #fb8500;
-}
-
-.form-create .create-btn:hover {
-  background: #e07b00;
-}
-
 .footer {
   margin-top: 32px;
 }
 
 .footer a {
-  color: #0077b6;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 600;
 }
 
 .footer a:hover {
   text-decoration: underline;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.gallery img {
+  width: 300px;
+  border-radius: 8px;
 }

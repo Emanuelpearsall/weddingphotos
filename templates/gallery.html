@@ -1,26 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Gallery — {{ code }}</title>
+  <title>Gallery: {{ code }} | MemoryLane</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>Gallery: {{ code }}</h1>
 
-  {% if urls %}
-    <div class="gallery">
+  <header>
+    <img src="/static/images/logo.png" alt="MemoryLane Logo" class="logo">
+    <h1>Gallery: {{ code }}</h1>
+  </header>
+
+  <div class="container gallery">
+    {% if urls %}
       {% for url in urls %}
-        <img src="{{ url }}" alt="Uploaded Image" width="300">
+        <img src="{{ url }}" alt="Uploaded Image">
       {% endfor %}
-    </div>
-  {% else %}
-    <p>No images found for this gallery code.</p>
-  {% endif %}
-
-  <div style="margin-top:20px;">
-    <a href="/upload?code={{ code }}">Upload More Photos</a> |
-    <a href="/">Back Home</a>
+    {% else %}
+      <p>No images found for this gallery code.</p>
+    {% endif %}
   </div>
+
+  <div class="footer">
+    <p>
+      <a href="{{ url_for('upload', code=code) }}">Upload More</a> |
+      <a href="{{ url_for('my_gallery') }}">My Gallery</a> |
+      <a href="/">Home</a>
+    </p>
+  </div>
+
 </body>
 </html>

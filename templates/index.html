@@ -2,30 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Upload Your Memories</title>
+  <title>MemoryLane</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="hero">
-    <!-- real smile emoji icon -->
-    <img src="https://img.icons8.com/emoji/96/000000/smiling-face.png"
-         alt="Smile Icon" class="icon">
-    <h1>Upload Your Memories!</h1>
-    <!-- real camera icon -->
-    <img src="https://img.icons8.com/ios/100/000000/camera--v1.png"
-         alt="Camera Icon" class="icon">
-  </div>
+
+  <header>
+    <img src="/static/images/logo.png" alt="MemoryLane Logo" class="logo">
+    <h1>MemoryLane</h1>
+    <p class="tagline">Get your code! Get your memory!</p>
+  </header>
 
   <div class="container">
-    <!-- Join existing gallery -->
+    <!-- Join to upload -->
     <form action="/upload" method="get" class="form-join">
-      <label for="code">Gallery Code</label>
+      <label for="code">Gallery Code (to Upload)</label>
       <input type="text" name="code" id="code" placeholder="e.g. sunny-day-123" required>
 
       <label for="name">Your Name (optional)</label>
       <input type="text" name="name" id="name" placeholder="e.g. Alex or Aunt Lisa">
 
-      <button type="submit">Join Gallery</button>
+      <button type="submit">Join & Upload</button>
     </form>
 
     <hr>
@@ -34,14 +31,20 @@
     <form action="/create" method="post" class="form-create">
       <button type="submit" class="create-btn">🎉 Create a New Gallery</button>
     </form>
+
+    <hr>
+
+    <!-- View-only gallery -->
+    <form action="/gallery" method="get" class="form-view">
+      <label for="view_code">Gallery Code (to View)</label>
+      <input type="text" name="code" id="view_code" placeholder="e.g. sunny-day-123" required>
+      <button type="submit" class="view-btn">🔍 View Gallery</button>
+    </form>
   </div>
 
   <div class="footer">
     <p><a href="{{ url_for('my_gallery') }}">View My Gallery</a></p>
-
-    <!-- real airplane icon -->
-    <img src="https://img.icons8.com/emoji/96/000000/airplane-emoji.png"
-         alt="Plane Icon" class="icon">
   </div>
+
 </body>
 </html>
